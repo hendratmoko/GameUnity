@@ -681,9 +681,20 @@ Bulan : <span id="display-bulan">1</span> / 12
 </div>
 
 <div class="info-box">
-Modal Awal : <span id="modal-awal">-</span> M
+Modal Awal Level :
+<span id="modal-awal">-</span> M
 </div>
 
+<div class="info-box">
+Sisa Modal Level Sebelumnya :
+<span id="prev-modal">0</span> M
+</div>
+
+<div class="info-box">
+Total Kekayaan Industri :
+<span id="total-wealth">0</span> M
+</div>
+    
 </div>
 
 <div>
@@ -835,9 +846,10 @@ target="_blank">
 </a>
 
 <script>
-
 let modal = 0;
 let modalAwal = 0;
+let previousCapital = 0;
+let totalWealth = 0;
 let bulan = 1;
 let currentLevel = 1;
 let assets = new Set();
