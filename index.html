@@ -598,13 +598,13 @@ Industrial Tycoon Simulator
 <div class="synopsis">
 
 Di dunia industri modern, setiap keputusan menentukan nasib perusahaan.
-Anda adalah seorang pengusaha muda yang mendapatkan kesempatan membangun
-kerajaan industri dari nol.
+Anda adalah seorang CEO pengusaha muda yang mendapatkan kesempatan membangun
+kerajaan industri dari nol.Modal terbatas, harga pasar tidak stabil,
+waktu terus berjalan, dan investor mulai kehilangan kesabaran.
 
-Bangun infrastruktur, beli mesin,
-atur strategi pembelian,
-dan selesaikan proyek sebelum modal habis.
-
+Bangun infrastruktur, beli mesin, rekrut tenaga kerja, dan hadapi
+RNG pasar yang kejam. Kegagalan akan membuat proyek mangkrak.
+Keberhasilan akan mengubah Anda menjadi legenda industri.
 </div>
 
 <div class="hero-factory">
@@ -732,7 +732,7 @@ Belum ada asset yang dilewati.
 </button>
 
 <button id="btn-draw" class="btn btn-alt" onclick="drawCard()" disabled>
-🎲 Roll Dadu
+🎲 Roll Modal Awal
 </button>
 
 <div id="action-group" style="display:none;margin-top:20px;">
@@ -1068,8 +1068,10 @@ document.getElementById('result-icon').innerHTML='🏭✨';
 document.getElementById('result-title').innerHTML='INDUSTRI BERDIRI';
 
 document.getElementById('result-analysis').innerHTML=`
-
+Performa luar biasa. Anda berhasil mengamankan seluruh supply chain dalam waktu 12 bulan. Sisa modal Rp ${modal}M menunjukkan efisiensi operasional yang tinggi.
 Seluruh komponen berhasil diselesaikan.
+
+Anda membangun imperium ini dari debu menjadi raksasa. Sisa dana <b>${modal}M</b> membuktikan Anda bukan sekadar beruntung, tapi visioner. Dunia kini berlutut di bawah roda gigi pabrik Anda.
 
 Asap pabrik mulai mengepul.
 Mesin produksi mulai bergerak.
@@ -1091,6 +1093,7 @@ Namun di level berikutnya...
 pasar akan jauh lebih brutal,
 harga semakin tidak stabil,
 dan investor semakin kejam.
+ <br><br><i>Saran Strategis: Bersiaplah, level berikutnya tidak akan semudah ini. Investor mulai menuntut margin yang lebih gila. Di level berikutnya, harga akan naik 30-50%. Pertimbangkan untuk tidak membuang komponen murah ke market.</i>
 `;
 
 if(currentLevel<5){
@@ -1101,7 +1104,7 @@ currentLevel++;
 
 document.getElementById('result-icon').innerHTML='💀';
 
-document.getElementById('result-title').innerHTML='PROYEK MANGKRAK';
+document.getElementById('result-title').innerHTML='PROJECT ABANDONED';
 
 document.getElementById('result-analysis').innerHTML=`
 
@@ -1114,10 +1117,12 @@ Mesin berhenti sebelum sempat beroperasi.
 Impian industrialisasi runtuh
 di tengah tekanan pasar.
 
-📊 ANALISIS PEMAIN
+📊 ANALISIS KEGAGALAN 
 
 • Komponen : ${assets.size}/6
 • Sisa Modal : ${modal} M
+
+</b> Proyek mangkrak karena kurangnya ${6 - assets.size} komponen utama. Anda terlalu selektif atau kurang cepat dalam mengambil keputusan saat penawaran muncul.<br>
 
 💡 SARAN
 
