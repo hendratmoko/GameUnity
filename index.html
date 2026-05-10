@@ -536,7 +536,7 @@ body{
 <div class="intro-box">
 
 <div class="game-logo">
-FACTORY RUSH
+⚙ FACTORY RUSH
 </div>
 
 <div class="subtitle">
@@ -545,15 +545,14 @@ Industrial Tycoon Simulator
 
 <div class="synopsis">
 
-Anda adalah pengusaha muda yang mencoba membangun kerajaan industri modern.
+Di dunia industri modern, setiap keputusan menentukan nasib perusahaan.
+Anda adalah seorang CEO pengusaha muda yang mendapatkan kesempatan membangun
+kerajaan industri dari nol.Modal terbatas, harga pasar tidak stabil,
+waktu terus berjalan, dan investor mulai kehilangan kesabaran.
 
-Bangun infrastruktur,
-beli mesin,
-atur cashflow,
-dan selesaikan proyek sebelum modal habis.
-
-Satu keputusan salah...
-dapat menghancurkan seluruh imperium industri Anda.
+Bangun infrastruktur, beli mesin, rekrut tenaga kerja, dan hadapi
+RNG pasar yang kejam. Kegagalan akan membuat proyek mangkrak.
+Keberhasilan akan mengubah Anda menjadi legenda industri.
 
 </div>
 
@@ -566,12 +565,15 @@ dapat menghancurkan seluruh imperium industri Anda.
 <div class="hero-text">
 
 <h2>
-⚙ BUILD YOUR INDUSTRIAL EMPIRE
+🪙 BUILD YOUR INDUSTRIAL EMPIRE
 </h2>
-
-<p>
+    
+<div class="synopsis">
 Bangun jaringan industri terbesar dan kuasai pasar global.
-</p>
+
+Selamat datang di era industri 4.0. Anda baru saja dilantik sebagai CEO. 
+Tugas Anda sederhana namun mematikan: Bangun pabrik utuh dalam 12 bulan atau hadapi tuntutan pemegang saham.
+</div>
 
 </div>
 
@@ -580,7 +582,7 @@ Bangun jaringan industri terbesar dan kuasai pasar global.
 <div class="btn-group">
 
 <button class="btn btn-main" onclick="startGame()">
-▶ MULAI GAME
+▶ CEO Room
 </button>
 
 </div>
@@ -693,13 +695,13 @@ Belum ada asset yang dilewati.
 </button>
 
 <button id="btn-draw" class="btn btn-alt" onclick="drawCard()" disabled>
-🎲 Roll Dadu
+🎲 Roll Procurement 
 </button>
 
 <div id="action-group" style="display:none;margin-top:20px;">
 
 <button class="btn btn-main" onclick="buyCard()">
-✅ Beli
+✅ Akuisisi Aset
 </button>
 
 <button class="btn btn-alt" onclick="toMarket()">
@@ -780,7 +782,7 @@ Analisis pemain...
 <!-- LIVE -->
 
 <a class="live-link"
-href="https://www.youtube.com/live/kns3vn133y4?si=Al9IvLT3OhfnAw0w"
+href="https://www.youtube.com/live/RcT7tD86gLU?si=znVcPqHiAAAhhzw_"
 target="_blank">
 
 <div class="live-icon">
@@ -788,7 +790,7 @@ target="_blank">
 </div>
 
 <div>
-<b>WATCH LIVE</b>
+<b>WATCH ACTUALLY</b>
 </div>
 
 </a>
@@ -1096,6 +1098,15 @@ document.getElementById('result-title').innerHTML='INDUSTRI BERDIRI';
 document.getElementById('result-analysis').innerHTML=`
 
 Seluruh komponen berhasil diselesaikan.
+Performa luar biasa. Anda berhasil mengamankan seluruh supply chain dalam waktu 12 bulan. Sisa modal Rp ${modal}M menunjukkan efisiensi operasional yang tinggi.
+Seluruh komponen berhasil diselesaikan.
+
+Anda membangun imperium ini dari debu menjadi raksasa. Sisa dana <b>${modal}M</b> membuktikan Anda bukan sekadar beruntung, tapi visioner. Dunia kini berlutut di bawah roda gigi pabrik Anda.
+
+Asap pabrik mulai mengepul.
+Mesin produksi mulai bergerak.
+Investor mulai menyebut nama Anda
+sebagai calon raja industri baru.
 
 📊 ANALISIS PEMAIN
 
@@ -1112,7 +1123,13 @@ ${modal>200?'Visioner':'Agresif'}
 
 💡 SARAN
 
-Pasar berikutnya akan lebih brutal.
+Anda berhasil mengendalikan risiko industri.
+
+Namun di level berikutnya...
+pasar akan jauh lebih brutal,
+harga semakin tidak stabil,
+dan investor semakin kejam.
+ <br><br><i>Saran Strategis: Bersiaplah, level berikutnya tidak akan semudah ini. Investor mulai menuntut margin yang lebih gila. Di level berikutnya, harga akan naik 30-50%. Pertimbangkan untuk tidak membuang komponen murah ke market.
 `;
 
 if(currentLevel<5){
@@ -1123,11 +1140,18 @@ currentLevel++;
 
 document.getElementById('result-icon').innerHTML='💀';
 
-document.getElementById('result-title').innerHTML='PROYEK MANGKRAK';
+document.getElementById('result-title').innerHTML='PROYEK ABANDONET';
 
 document.getElementById('result-analysis').innerHTML=`
 
 Waktu habis sebelum proyek selesai.
+
+Gedung setengah jadi mulai ditinggalkan.
+Investor menarik seluruh dana.
+Mesin berhenti sebelum sempat beroperasi.
+
+Impian industrialisasi runtuh
+di tengah tekanan pasar.
 
 📊 ANALISIS PEMAIN
 
