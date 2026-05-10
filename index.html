@@ -6,205 +6,175 @@
     <title>Factory Rush: Industrial Tycoon</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --accent: #e74c3c;
-            --success: #2ecc71;
-            --gold: #f1c40f;
+            --primary: #0f172a;
+            --accent: #f43f5e;
+            --success: #10b981;
+            --gold: #fbbf24;
+            --glass: rgba(255, 255, 255, 0.05);
         }
 
-        body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0;
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #020617;
+            color: #f8fafc;
             overflow-x: hidden;
+            height: 100%;
         }
 
-        .game-container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 20px;
-            width: 95%;
-            max-width: 1000px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        /* Splash Screen & Animations */
+        #splash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
+            z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Animations */
-        @keyframes pulse {
-            0% { transform: scale(1); filter: drop-shadow(0 0 0px var(--gold)); }
-            50% { transform: scale(1.05); filter: drop-shadow(0 0 15px var(--gold)); }
-            100% { transform: scale(1); filter: drop-shadow(0 0 0px var(--gold)); }
+        .title-glow {
+            font-size: 5rem; font-weight: 900; letter-spacing: -2px;
+            background: linear-gradient(to bottom, #fff 20%, #64748b 80%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(255,255,255,0.2));
+            animation: titlePulse 3s infinite;
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.02); filter: brightness(1.2); }
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding: 15px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 15px;
+        .synopsis {
+            max-width: 600px; text-align: center; margin: 20px; line-height: 1.6;
+            color: #94a3b8; font-style: italic; animation: fadeIn 2s;
         }
 
-        .level-badge {
-            background: var(--gold);
-            color: #000;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            text-transform: uppercase;
+        /* Modal / Overlay */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 500; display: none;
+            flex-direction: column; align-items: center; justify-content: center; padding: 20px;
+            animation: fadeIn 0.5s;
         }
 
-        .main-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
+        /* Game Interface */
+        .game-wrapper {
+            max-width: 1100px; margin: 0 auto; padding: 40px 20px;
+            display: none; animation: fadeIn 1s;
         }
 
-        .section {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 15px;
-            min-height: 350px;
+        .header-panel {
+            background: var(--glass); padding: 25px; border-radius: 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px;
         }
 
-        /* Icon Styling */
-        .icon {
-            font-size: 24px;
-            margin-right: 10px;
-            display: inline-block;
-        }
-
-        .active-icon {
-            animation: pulse 2s infinite ease-in-out;
-        }
+        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
 
         .card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 10px;
-            transition: 0.3s;
-            border-left: 4px solid transparent;
-            animation: slideIn 0.4s ease-out;
+            background: var(--glass); padding: 20px; margin: 15px 0;
+            border-radius: 16px; border-left: 6px solid #475569;
+            transition: 0.4s; position: relative; overflow: hidden;
         }
 
-        .card.owned {
-            border-left-color: var(--success);
-            background: rgba(46, 204, 113, 0.2);
-        }
-
-        .card.pending {
-            border-left-color: var(--accent);
-            opacity: 0.6;
-        }
-
+        .card.owned { border-left-color: var(--success); background: rgba(16, 185, 129, 0.1); }
+        
         .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            text-transform: uppercase;
+            padding: 14px 32px; border-radius: 12px; font-weight: 700;
+            cursor: pointer; border: none; transition: 0.3s; text-transform: uppercase;
         }
 
-        .btn-main { background: var(--success); color: white; }
-        .btn-main:hover { background: #27ae60; transform: translateY(-2px); }
-        .btn-alt { background: var(--gold); color: black; }
+        .btn-gold { background: var(--gold); color: #000; }
+        .btn-gold:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
 
-        .modal-display {
-            font-size: 2em;
-            color: var(--gold);
-            text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
-        }
+        /* Icon Animation */
+        .icon-bounce { font-size: 2rem; display: inline-block; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            text-align: center;
+        .analysis-box {
+            background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;
+            margin: 20px 0; border: 1px solid var(--gold); text-align: left;
         }
     </style>
 </head>
 <body>
 
-<div id="finish-overlay" class="overlay">
-    <h1 id="finish-title" style="font-size: 4em;"></h1>
-    <p id="finish-sub" style="font-size: 1.5em;"></p>
-    <div id="finish-icon" style="font-size: 100px; margin: 20px;"></div>
-    <button class="btn btn-alt" onclick="resetGame()">Main Lagi / Level Berikutnya</button>
-</div>
-
-<div class="game-container">
-    <div class="header">
-        <div>
-            <span id="level-text" class="level-badge">Level 1: Startup</span>
-            <div style="margin-top: 5px;">Bulan: <span id="display-bulan">1</span> / 12</div>
-        </div>
-        <div style="text-align: right;">
-            <div>Sisa Modal:</div>
-            <div class="modal-display"><span id="display-modal">0</span> <small>M</small></div>
+    <div id="splash-screen">
+        <div class="title-glow">FACTORY RUSH</div>
+        <p class="synopsis">
+            "Dunia berada di ambang krisis manufaktur. Sebagai CEO baru, Anda dibekali modal awal untuk membangun ekosistem pabrik dari nol. Waktu Anda hanya 12 bulan sebelum investor menarik dukungan mereka. Apakah Anda sanggup mengelola modal dan risiko?"
+        </p>
+        <div style="display: flex; gap: 15px;">
+            <button class="btn btn-gold" onclick="startGame()">MULAI EKSPANSI</button>
+            <button class="btn" style="background: #475569; color: white;" onclick="toggleTutorial(true)">CARA BERMAIN</button>
         </div>
     </div>
 
-    <div class="main-layout">
-        <div class="section">
-            <h3>🛒 Procurement (Shop)</h3>
-            <div id="draw-area">
-                <p style="color: #888;">Silakan klik "Roll Dadu" untuk mencari komponen.</p>
+    <div id="tutorial-modal" class="overlay">
+        <div style="max-width: 500px; background: #1e293b; padding: 40px; border-radius: 24px; border: 1px solid var(--gold);">
+            <h2>📖 Protokol Pembangunan</h2>
+            <ul style="text-align: left; line-height: 1.8;">
+                <li>Tentukan <b>Modal Awal</b> dengan 3x kocokan dadu (Ratusan, Puluhan, Satuan).</li>
+                <li>Setiap bulan, <b>Roll Dadu</b> untuk mendapatkan penawaran komponen.</li>
+                <li>Lengkapi <b>6 Komponen Utama</b> sebelum Bulan ke-12 berakhir.</li>
+                <li>Jika melewatkan penawaran, harga di Market naik menjadi <b>150%</b>.</li>
+                <li>Naikkan level untuk tantangan harga yang lebih ekstrem.</li>
+            </ul>
+            <button class="btn btn-gold" style="width: 100%;" onclick="toggleTutorial(false)">MENGERTI</button>
+        </div>
+    </div>
+
+    <div class="game-wrapper" id="main-game">
+        <div class="header-panel">
+            <div>
+                <div style="color: var(--gold); font-weight: 800; letter-spacing: 1px;" id="level-name">LEVEL 1: STARTUP</div>
+                <div style="font-size: 2rem;">Bulan <span id="display-bulan">1</span>/12</div>
             </div>
-            <div id="market-area" style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+            <div style="text-align: right;">
+                <div style="color: #94a3b8;">Sisa Dana Perusahaan</div>
+                <div style="font-size: 2.5rem; font-weight: 900; color: #fff;">Rp <span id="display-modal" style="color: var(--gold);">0</span> <small style="font-size: 1rem;">MILYAR</small></div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="section-box">
+                <h3 style="display: flex; align-items: center; gap: 10px;"><span class="icon-bounce">📦</span> PROCUREMENT</h3>
+                <div id="draw-area" style="min-height: 200px; background: rgba(0,0,0,0.2); border-radius: 16px; padding: 20px;">
+                    <p style="color: #64748b; text-align: center; margin-top: 60px;">Klik tombol di bawah untuk mencari aset...</p>
                 </div>
+                <div id="market-area" style="margin-top: 20px;"></div>
+            </div>
+
+            <div class="section-box">
+                <h3 style="display: flex; align-items: center; gap: 10px;"><span class="icon-bounce">🏭</span> FACTORY STATUS</h3>
+                <div id="asset-list"></div>
+            </div>
         </div>
 
-        <div class="section">
-            <h3>🏗️ Factory Blueprint</h3>
-            <div id="asset-list"></div>
+        <div style="text-align: center; margin-top: 50px;">
+            <button id="btn-init" class="btn btn-gold" onclick="initModal()">ROLL INITIAL CAPITAL</button>
+            <button id="btn-draw" class="btn" style="background: var(--success); color: white;" onclick="drawCard()" disabled>🎲 CARI KOMPONEN (ROLL)</button>
+            <div id="action-group" style="display:none; margin-top: 20px; gap: 15px; justify-content: center;">
+                <button class="btn" style="background: var(--success); color: white;" onclick="buyCard()">AKUISISI ASET</button>
+                <button class="btn" style="background: #475569; color: white;" onclick="toMarket()">ABAIKAN</button>
+            </div>
         </div>
     </div>
 
-    <div style="text-align: center; margin-top: 30px;">
-        <button id="btn-init" class="btn btn-alt" onclick="initModal()">Roll Modal Awal</button>
-        <button id="btn-draw" class="btn btn-main" onclick="drawCard()" disabled>🎲 Roll Dadu</button>
-        
-        <div id="action-group" style="display:none; margin-top: 15px;">
-            <button class="btn btn-main" onclick="buyCard()">✅ Beli Sekarang</button>
-            <button class="btn" style="background:#888;" onclick="toMarket()">✖ Lewati</button>
-        </div>
+    <div id="finish-overlay" class="overlay">
+        <h1 id="finish-title" style="font-size: 5rem; margin-bottom: 0;"></h1>
+        <div id="finish-icon" style="font-size: 80px;"></div>
+        <div class="analysis-box" id="ai-analysis">
+            </div>
+        <button class="btn btn-gold" onclick="resetGame()">LANJUTKAN PROYEK</button>
     </div>
-</div>
 
 <script>
-    let modal = 0;
-    let bulan = 1;
-    let currentLevel = 1;
-    let assets = new Set();
-    let market = new Map();
-    let currentCard = null;
+    let modal = 0, bulan = 1, currentLevel = 1, assets = new Set(), market = new Map(), currentCard = null;
 
     const levels = {
-        1: { name: "Startup", multiplier: 1 },
-        2: { name: "Small Industry", multiplier: 1.2 },
-        3: { name: "Medium Enterprise", multiplier: 1.5 },
-        4: { name: "Corporate Giant", multiplier: 2 },
-        5: { name: "Industrial Empire", multiplier: 3 }
+        1: { name: "STARTUP", mult: 1 }, 2: { name: "SMALL INDUSTRY", mult: 1.3 }, 
+        3: { name: "MEDIUM SCALE", mult: 1.7 }, 4: { name: "CORPORATE", mult: 2.2 }, 5: { name: "EMPIRE", mult: 3 }
     };
 
     const komponen = {
@@ -216,41 +186,43 @@
         6: { name: "Upgrade Factory", base: 120, icon: "🔝" }
     };
 
+    function startGame() {
+        document.getElementById('splash-screen').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('main-game').style.display = 'block';
+        }, 1000);
+    }
+
+    function toggleTutorial(show) {
+        document.getElementById('tutorial-modal').style.display = show ? 'flex' : 'none';
+    }
+
     function initModal() {
-        let r1 = Math.floor(Math.random() * 6) + 1;
-        let r2 = Math.floor(Math.random() * 6) + 1;
-        let r3 = Math.floor(Math.random() * 6) + 1;
-        modal = (r1 * 100) + (r2 * 10) + r3;
-        
+        let r = () => Math.floor(Math.random() * 6) + 1;
+        modal = (r() * 100) + (r() * 10) + r();
         updateUI();
-        document.getElementById('btn-init').disabled = true;
+        document.getElementById('btn-init').style.display = 'none';
         document.getElementById('btn-draw').disabled = false;
     }
 
     function drawCard() {
-        if (bulan > 12) return;
-
         let die = Math.floor(Math.random() * 6) + 1;
         let item = komponen[die];
-        // Harga dipengaruhi level
-        let price = Math.floor(item.base * levels[currentLevel].multiplier);
+        let price = Math.floor(item.base * levels[currentLevel].mult);
         let isMarket = market.has(die);
-        
         if (isMarket) price = Math.floor(price * 1.5);
 
         currentCard = { id: die, ...item, price, isMarket };
-
         document.getElementById('draw-area').innerHTML = `
-            <div class="card active-icon" style="background: rgba(255,255,255,0.2); border-left: 4px solid var(--gold);">
-                <span class="icon">${item.icon}</span>
-                <strong>${item.name}</strong><br>
-                Biaya: <span style="color:var(--gold)">${price} Milyar</span>
-                ${isMarket ? '<br><small style="color:var(--accent)">Harga Market (Denda 150%)</small>' : ''}
-            </div>
-        `;
-        
+            <div class="card" style="border-left-color: var(--gold); background: rgba(251, 191, 36, 0.1);">
+                <span style="font-size: 2rem;">${item.icon}</span><br>
+                <strong>${item.name.toUpperCase()}</strong><br>
+                Estimasi Biaya: <span style="color: var(--gold); font-size: 1.5rem;">${price} M</span>
+                ${isMarket ? '<br><small style="color: var(--accent);">⚠️ HARGA MARKET (DENDA 150%)</small>' : ''}
+            </div>`;
         document.getElementById('btn-draw').disabled = true;
-        document.getElementById('action-group').style.display = 'block';
+        document.getElementById('action-group').style.display = 'flex';
     }
 
     function buyCard() {
@@ -259,9 +231,7 @@
             assets.add(currentCard.id);
             if (currentCard.isMarket) market.delete(currentCard.id);
             nextTurn();
-        } else {
-            alert("MODAL TIDAK CUKUP! Komponen ini harus dilewati.");
-        }
+        } else { alert("DANA PERUSAHAAN TIDAK CUKUP!"); }
     }
 
     function toMarket() {
@@ -270,72 +240,59 @@
     }
 
     function nextTurn() {
-        if (bulan >= 12) {
-            showResult();
-        } else {
+        if (bulan >= 12) { finishGame(); } 
+        else {
             bulan++;
             document.getElementById('action-group').style.display = 'none';
-            document.getElementById('draw-area').innerHTML = '<p>Mencari komponen berikutnya...</p>';
-            setTimeout(() => {
-                document.getElementById('btn-draw').disabled = false;
-                updateUI();
-            }, 500);
+            document.getElementById('draw-area').innerHTML = "<p style='text-align:center'>Menghitung data bulan berikutnya...</p>";
+            setTimeout(() => { updateUI(); document.getElementById('btn-draw').disabled = false; }, 400);
         }
     }
 
     function updateUI() {
         document.getElementById('display-modal').innerText = modal;
         document.getElementById('display-bulan').innerText = bulan;
-        document.getElementById('level-text').innerText = `Level ${currentLevel}: ${levels[currentLevel].name}`;
-
+        document.getElementById('level-name').innerText = `LEVEL ${currentLevel}: ${levels[currentLevel].name}`;
+        
         let html = "";
         for (let i = 1; i <= 6; i++) {
             let owned = assets.has(i);
-            html += `
-                <div class="card ${owned ? 'owned' : 'pending'}">
-                    <span class="icon ${owned ? 'active-icon' : ''}">${komponen[i].icon}</span>
-                    ${komponen[i].name} ${owned ? '✅' : '(Belum Dibangun)'}
-                </div>
-            `;
+            html += `<div class="card ${owned ? 'owned' : ''}">
+                <span style="margin-right:10px">${komponen[i].icon}</span> 
+                ${komponen[i].name} ${owned ? '<b style="float:right; color:var(--success)">TERPASANG</b>' : ''}
+            </div>`;
         }
         document.getElementById('asset-list').innerHTML = html;
     }
 
-    function showResult() {
+    function finishGame() {
         const overlay = document.getElementById('finish-overlay');
         const title = document.getElementById('finish-title');
-        const sub = document.getElementById('finish-sub');
-        const icon = document.getElementById('finish-icon');
-        
+        const analysis = document.getElementById('ai-analysis');
         overlay.style.display = 'flex';
 
+        let analysisText = "";
         if (assets.size === 6) {
-            title.innerText = "SELAMAT!";
+            title.innerText = "MISSION SUCCESS";
             title.style.color = "var(--success)";
-            sub.innerText = `Pabrik Berhasil Dibangun di Level ${currentLevel}!\nSisa Modal: ${modal} Milyar.`;
-            icon.innerText = "🏭✨";
+            analysisText = `<b>Analisis CEO:</b> Performa luar biasa. Anda berhasil mengamankan seluruh supply chain dalam waktu 12 bulan. Sisa modal Rp ${modal}M menunjukkan efisiensi operasional yang tinggi.<br><br><b>Saran:</b> Di level berikutnya, harga akan naik 30-50%. Pertimbangkan untuk tidak membuang komponen murah ke market.`;
             if (currentLevel < 5) currentLevel++;
         } else {
-            title.innerText = "MANGKRAK!";
+            title.innerText = "PROJECT ABANDONED";
             title.style.color = "var(--accent)";
-            sub.innerText = `Waktu habis! Anda hanya menyelesaikan ${assets.size}/6 komponen.\nProyek dihentikan oleh investor.`;
-            icon.innerText = "🏚️";
+            analysisText = `<b>Analisis Kegagalan:</b> Proyek mangkrak karena kurangnya ${6 - assets.size} komponen utama. Anda terlalu selektif atau kurang cepat dalam mengambil keputusan saat penawaran muncul.<br><br><b>Saran:</b> Jangan terlalu sering membuang kartu ke Market. Denda 150% adalah pembunuh modal utama. Fokus pada Lahan dan Infrastruktur di awal bulan.`;
         }
+        analysis.innerHTML = analysisText;
     }
 
     function resetGame() {
-        bulan = 1;
-        assets = new Set();
-        market = new Map();
-        modal = 0;
+        bulan = 1; assets = new Set(); market = new Map(); modal = 0;
         document.getElementById('finish-overlay').style.display = 'none';
-        document.getElementById('btn-init').disabled = false;
+        document.getElementById('btn-init').style.display = 'inline-block';
         document.getElementById('btn-draw').disabled = true;
         document.getElementById('action-group').style.display = 'none';
-        document.getElementById('draw-area').innerHTML = "<p>Mulai ulang produksi...</p>";
         updateUI();
     }
 </script>
-
 </body>
 </html>
