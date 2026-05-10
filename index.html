@@ -896,59 +896,83 @@ document.getElementById('help-page').classList.remove('active');
 document.getElementById('game-screen').classList.add('active');
 }
 
-function initModal(){
+    function initModal(){
 
 let r1=Math.floor(Math.random()*6)+4;
 let r2=Math.floor(Math.random()*6)+3;
 let r3=Math.floor(Math.random()*6)+2;
 
-modal=(r1*100)+(r2*10)+r3;
+let investorBonus=(r1*100)+(r2*10)+r3;
+
+/* LEVEL 1 LEBIH MUDAH */
 
 if(currentLevel===1){
-modal+=250;
+    investorBonus+=250;
 }
 
-modalAwal=modal;
+/* MODAL SEKARANG */
+
+modal = investorBonus + previousCapital;
+
+modalAwal = modal;
+
+/* TOTAL KEKAYAAN */
+
+totalWealth += modal;
+
+/* UI */
 
 document.getElementById('modal-awal').innerText=modalAwal;
+
+document.getElementById('prev-modal').innerText=previousCapital;
+
+document.getElementById('total-wealth').innerText=totalWealth;
 
 updateUI();
 
 document.getElementById('btn-init').disabled=true;
 document.getElementById('btn-draw').disabled=false;
-}
-
-function drawCard(){
-
-let die=Math.floor(Math.random()*6)+1;
-
-let item=komponen[die];
-
-let price=Math.floor(item.base*levels[currentLevel].multiplier);
-
-if(market.has(die)){
-price=Math.floor(price*1.5);
-}
-
-currentCard={id:die,...item,price};
 
 document.getElementById('draw-area').innerHTML=`
 
 <div class="card">
 
-<h2>${item.icon} ${item.name}</h2>
+<h2 style="color:#f59e0b;">
+💰 Pendanaan Industri Disetujui
+</h2>
 
-<div style="margin-top:10px;">
-Biaya : <b style="color:#f59e0b">${price} M</b>
+<div style="margin-top:15px;line-height:1.8;">
+
+• Dana Investor Baru :
+<b style="color:#22c55e">
+${investorBonus} M
+</b>
+
+<br>
+
+• Sisa Modal Level Sebelumnya :
+<b style="color:#38bdf8">
+${previousCapital} M
+</b>
+
+<br><br>
+
+<div style="
+font-size:26px;
+font-weight:bold;
+color:#f59e0b;
+">
+
+TOTAL MODAL :
+${modal} M
+
+</div>
+
 </div>
 
 </div>
 `;
-
-document.getElementById('btn-draw').disabled=true;
-
-document.getElementById('action-group').style.display='block';
-}
+    }
 
 function buyCard(){
 
