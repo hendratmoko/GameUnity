@@ -2,74 +2,191 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Factory Rush - Digital Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factory Rush: Industrial Tycoon</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eceff1; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .game-container { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 900px; }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; background: #263238; color: white; padding: 15px 20px; border-radius: 10px; margin-bottom: 20px; }
-        .stat-box { text-align: center; }
-        .stat-val { display: block; font-size: 1.5em; font-weight: bold; color: #4fc3f7; }
+        :root {
+            --primary: #2c3e50;
+            --accent: #e74c3c;
+            --success: #2ecc71;
+            --gold: #f1c40f;
+        }
 
-        .main-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        
-        .section { background: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; border-radius: 10px; min-height: 400px; }
-        h3 { border-bottom: 2px solid #cfd8dc; padding-bottom: 10px; margin-top: 0; color: #37474f; }
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            overflow-x: hidden;
+        }
 
-        .card { background: white; border-left: 5px solid #2196f3; padding: 12px; margin: 10px 0; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .card.asset-owned { border-left-color: #4caf50; background: #e8f5e9; }
-        .card.market-item { border-left-color: #ff9800; }
-        
-        .price-tag { font-weight: bold; color: #2e7d32; }
-        .market-tag { color: #d32f2f; font-size: 0.8em; font-style: italic; }
+        .game-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 1000px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
 
-        .controls { margin-top: 25px; text-align: center; border-top: 2px solid #eee; padding-top: 20px; }
-        button { padding: 12px 25px; font-size: 16px; cursor: pointer; border: none; border-radius: 8px; transition: 0.3s; font-weight: bold; }
-        #btn-modal { background: #673ab7; color: white; }
-        #btn-draw { background: #2196f3; color: white; }
-        button:disabled { background: #cfd8dc !important; cursor: not-allowed; }
-        
-        .action-group { margin-top: 15px; display: flex; justify-content: center; gap: 10px; }
-        .btn-buy { background: #4caf50; color: white; }
-        .btn-market { background: #ff9800; color: white; }
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 0px var(--gold)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 15px var(--gold)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 0px var(--gold)); }
+        }
 
-        #log-message { margin-top: 15px; padding: 10px; border-radius: 5px; background: #fff9c4; color: #827717; min-height: 20px; font-weight: 500; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+        }
+
+        .level-badge {
+            background: var(--gold);
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            min-height: 350px;
+        }
+
+        /* Icon Styling */
+        .icon {
+            font-size: 24px;
+            margin-right: 10px;
+            display: inline-block;
+        }
+
+        .active-icon {
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .card.owned {
+            border-left-color: var(--success);
+            background: rgba(46, 204, 113, 0.2);
+        }
+
+        .card.pending {
+            border-left-color: var(--accent);
+            opacity: 0.6;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            text-transform: uppercase;
+        }
+
+        .btn-main { background: var(--success); color: white; }
+        .btn-main:hover { background: #27ae60; transform: translateY(-2px); }
+        .btn-alt { background: var(--gold); color: black; }
+
+        .modal-display {
+            font-size: 2em;
+            color: var(--gold);
+            text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
+<div id="finish-overlay" class="overlay">
+    <h1 id="finish-title" style="font-size: 4em;"></h1>
+    <p id="finish-sub" style="font-size: 1.5em;"></p>
+    <div id="finish-icon" style="font-size: 100px; margin: 20px;"></div>
+    <button class="btn btn-alt" onclick="resetGame()">Main Lagi / Level Berikutnya</button>
+</div>
+
 <div class="game-container">
     <div class="header">
-        <div class="stat-box">BULAN<span id="display-bulan" class="stat-val">1</span></div>
-        <h2>FACTORY RUSH</h2>
-        <div class="stat-box">MODAL (JT)<span id="display-modal" class="stat-val">0</span></div>
+        <div>
+            <span id="level-text" class="level-badge">Level 1: Startup</span>
+            <div style="margin-top: 5px;">Bulan: <span id="display-bulan">1</span> / 12</div>
+        </div>
+        <div style="text-align: right;">
+            <div>Sisa Modal:</div>
+            <div class="modal-display"><span id="display-modal">0</span> <small>M</small></div>
+        </div>
     </div>
-
-    <div id="log-message">Silakan Roll Modal untuk memulai simulasi pembangunan pabrik.</div>
 
     <div class="main-layout">
         <div class="section">
-            <h3>🛒 SHOP & MARKET</h3>
-            <div id="current-draw-area">
-                </div>
-            <div id="market-list">
+            <h3>🛒 Procurement (Shop)</h3>
+            <div id="draw-area">
+                <p style="color: #888;">Silakan klik "Roll Dadu" untuk mencari komponen.</p>
+            </div>
+            <div id="market-area" style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
                 </div>
         </div>
 
         <div class="section">
-            <h3>🏭 ASET PABRIK</h3>
-            <div id="asset-list">
-                </div>
+            <h3>🏗️ Factory Blueprint</h3>
+            <div id="asset-list"></div>
         </div>
     </div>
 
-    <div class="controls">
-        <button id="btn-modal" onclick="initModal()">1. Roll Modal Awal</button>
-        <button id="btn-draw" onclick="drawCard()" disabled>2. Ambil Kartu (Dadu)</button>
+    <div style="text-align: center; margin-top: 30px;">
+        <button id="btn-init" class="btn btn-alt" onclick="initModal()">Roll Modal Awal</button>
+        <button id="btn-draw" class="btn btn-main" onclick="drawCard()" disabled>🎲 Roll Dadu</button>
         
-        <div id="action-buttons" class="action-group" style="display:none;">
-            <button class="btn-buy" onclick="buyCard()">Beli & Jadikan Aset</button>
-            <button class="btn-market" onclick="toMarket()">Taruh di Market</button>
+        <div id="action-group" style="display:none; margin-top: 15px;">
+            <button class="btn btn-main" onclick="buyCard()">✅ Beli Sekarang</button>
+            <button class="btn" style="background:#888;" onclick="toMarket()">✖ Lewati</button>
         </div>
     </div>
 </div>
@@ -77,18 +194,26 @@
 <script>
     let modal = 0;
     let bulan = 1;
-    let assetsOwned = new Set();
-    let marketCards = new Map(); // Untuk menyimpan kartu di market dan status harganya
+    let currentLevel = 1;
+    let assets = new Set();
+    let market = new Map();
     let currentCard = null;
 
-    // Daftar Komponen Sesuai Permintaan
+    const levels = {
+        1: { name: "Startup", multiplier: 1 },
+        2: { name: "Small Industry", multiplier: 1.2 },
+        3: { name: "Medium Enterprise", multiplier: 1.5 },
+        4: { name: "Corporate Giant", multiplier: 2 },
+        5: { name: "Industrial Empire", multiplier: 3 }
+    };
+
     const komponen = {
-        1: { nama: "Lahan & Infrastruktur", harga: 150 },
-        2: { nama: "Mesin & Peralatan", harga: 100 },
-        3: { nama: "Bahan Baku", harga: 50 },
-        4: { nama: "Tenaga Kerja", harga: 40 },
-        5: { nama: "Energi & Utility", harga: 60 },
-        6: { nama: "Upgrade Factory", harga: 120 }
+        1: { name: "Lahan & Infrastruktur", base: 150, icon: "🏗️" },
+        2: { name: "Mesin & Peralatan", base: 100, icon: "⚙️" },
+        3: { name: "Bahan Baku", base: 50, icon: "📦" },
+        4: { name: "Tenaga Kerja", base: 40, icon: "👷" },
+        5: { name: "Energi & Utility", base: 60, icon: "⚡" },
+        6: { name: "Upgrade Factory", base: 120, icon: "🔝" }
     };
 
     function initModal() {
@@ -97,126 +222,118 @@
         let r3 = Math.floor(Math.random() * 6) + 1;
         modal = (r1 * 100) + (r2 * 10) + r3;
         
-        updateDisplay();
-        document.getElementById('btn-modal').disabled = true;
+        updateUI();
+        document.getElementById('btn-init').disabled = true;
         document.getElementById('btn-draw').disabled = false;
-        log("Modal masuk: Rp " + modal + " JT. Silakan ambil kartu komponen pertama.");
     }
 
     function drawCard() {
         if (bulan > 12) return;
 
         let die = Math.floor(Math.random() * 6) + 1;
-        let info = komponen[die];
-        let finalPrice = info.harga;
-        let isFromMarket = false;
+        let item = komponen[die];
+        // Harga dipengaruhi level
+        let price = Math.floor(item.base * levels[currentLevel].multiplier);
+        let isMarket = market.has(die);
+        
+        if (isMarket) price = Math.floor(price * 1.5);
 
-        if (marketCards.has(die)) {
-            finalPrice = Math.floor(info.harga * 1.5);
-            isFromMarket = true;
-        }
+        currentCard = { id: die, ...item, price, isMarket };
 
-        currentCard = { id: die, nama: info.nama, harga: finalPrice, market: isFromMarket };
-
-        document.getElementById('current-draw-area').innerHTML = `
-            <div class="card ${isFromMarket ? 'market-item' : ''}">
-                <strong>[${die}] ${currentCard.nama}</strong><br>
-                Harga: <span class="price-tag">${currentCard.harga} JT</span>
-                ${isFromMarket ? '<br><span class="market-tag">(Pernah ditolak: Harga +50%)</span>' : ''}
+        document.getElementById('draw-area').innerHTML = `
+            <div class="card active-icon" style="background: rgba(255,255,255,0.2); border-left: 4px solid var(--gold);">
+                <span class="icon">${item.icon}</span>
+                <strong>${item.name}</strong><br>
+                Biaya: <span style="color:var(--gold)">${price} Milyar</span>
+                ${isMarket ? '<br><small style="color:var(--accent)">Harga Market (Denda 150%)</small>' : ''}
             </div>
         `;
         
         document.getElementById('btn-draw').disabled = true;
-        document.getElementById('action-buttons').style.display = 'flex';
+        document.getElementById('action-group').style.display = 'block';
     }
 
     function buyCard() {
-        if (modal >= currentCard.harga) {
-            modal -= currentCard.harga;
-            assetsOwned.add(currentCard.id);
-            if (currentCard.market) marketCards.delete(currentCard.id);
-            
-            log("Berhasil membeli " + currentCard.nama);
+        if (modal >= currentCard.price) {
+            modal -= currentCard.price;
+            assets.add(currentCard.id);
+            if (currentCard.isMarket) market.delete(currentCard.id);
             nextTurn();
         } else {
-            alert("Modal tidak mencukupi untuk membeli aset ini!");
+            alert("MODAL TIDAK CUKUP! Komponen ini harus dilewati.");
         }
     }
 
     function toMarket() {
-        marketCards.set(currentCard.id, true);
-        log(currentCard.nama + " dipindahkan ke Market Place.");
+        market.set(currentCard.id, true);
         nextTurn();
     }
 
     function nextTurn() {
-        document.getElementById('action-buttons').style.display = 'none';
-        document.getElementById('current-draw-area').innerHTML = "";
-        
         if (bulan >= 12) {
-            checkGameOver();
+            showResult();
         } else {
             bulan++;
-            updateDisplay();
-            document.getElementById('btn-draw').disabled = false;
+            document.getElementById('action-group').style.display = 'none';
+            document.getElementById('draw-area').innerHTML = '<p>Mencari komponen berikutnya...</p>';
+            setTimeout(() => {
+                document.getElementById('btn-draw').disabled = false;
+                updateUI();
+            }, 500);
         }
     }
 
-    function updateDisplay() {
+    function updateUI() {
         document.getElementById('display-modal').innerText = modal;
         document.getElementById('display-bulan').innerText = bulan;
-        
-        // Update List Aset (Kolom Kanan)
-        let assetHTML = "";
+        document.getElementById('level-text').innerText = `Level ${currentLevel}: ${levels[currentLevel].name}`;
+
+        let html = "";
         for (let i = 1; i <= 6; i++) {
-            if (assetsOwned.has(i)) {
-                assetHTML += `<div class="card asset-owned">✅ ${komponen[i].nama}</div>`;
-            } else {
-                assetHTML += `<div class="card" style="opacity: 0.5; border-left-color: #ccc;">❌ ${komponen[i].nama} (Belum Ada)</div>`;
-            }
+            let owned = assets.has(i);
+            html += `
+                <div class="card ${owned ? 'owned' : 'pending'}">
+                    <span class="icon ${owned ? 'active-icon' : ''}">${komponen[i].icon}</span>
+                    ${komponen[i].name} ${owned ? '✅' : '(Belum Dibangun)'}
+                </div>
+            `;
         }
-        document.getElementById('asset-list').innerHTML = assetHTML;
-
-        // Update Market (Kolom Kiri Bawah)
-        let marketHTML = marketCards.size > 0 ? "<h4>Market Place (Terbuka):</h4>" : "";
-        marketCards.forEach((val, key) => {
-            marketHTML += `<div class="card market-item" style="font-size:0.85em;">${komponen[key].nama} (Denda 150%)</div>`;
-        });
-        document.getElementById('market-list').innerHTML = marketHTML;
+        document.getElementById('asset-list').innerHTML = html;
     }
 
-    function log(msg) {
-        document.getElementById('log-message').innerText = msg;
-    }
-
-    function checkGameOver() {
-        updateDisplay();
-        document.getElementById('btn-draw').disabled = true;
+    function showResult() {
+        const overlay = document.getElementById('finish-overlay');
+        const title = document.getElementById('finish-title');
+        const sub = document.getElementById('finish-sub');
+        const icon = document.getElementById('finish-icon');
         
-        let uniqueAssets = assetsOwned.size;
-        let resultTitle = "";
-        let resultContent = "";
+        overlay.style.display = 'flex';
 
-        if (uniqueAssets === 6) {
-            if (modal > 0) {
-                resultTitle = "🏆 MENANG (LABA)";
-                resultContent = "Selamat! Pabrik lengkap dalam 12 bulan dan sisa modal tersedia untuk operasional.";
-            } else {
-                resultTitle = "🏅 MENANG (PAS)";
-                resultContent = "Pabrik berhasil dibangun, namun modal habis total. Pabrik berdiri tapi tidak bisa beroperasi.";
-            }
+        if (assets.size === 6) {
+            title.innerText = "SELAMAT!";
+            title.style.color = "var(--success)";
+            sub.innerText = `Pabrik Berhasil Dibangun di Level ${currentLevel}!\nSisa Modal: ${modal} Milyar.`;
+            icon.innerText = "🏭✨";
+            if (currentLevel < 5) currentLevel++;
         } else {
-            resultTitle = "❌ KALAH (MANGKRAK)";
-            resultContent = `Pembangunan gagal. Anda hanya mengumpulkan ${uniqueAssets}/6 komponen dalam 12 bulan.`;
+            title.innerText = "MANGKRAK!";
+            title.style.color = "var(--accent)";
+            sub.innerText = `Waktu habis! Anda hanya menyelesaikan ${assets.size}/6 komponen.\nProyek dihentikan oleh investor.`;
+            icon.innerText = "🏚️";
         }
+    }
 
-        document.getElementById('main-layout').innerHTML = `
-            <div style="grid-column: span 2; text-align: center; padding: 40px; background: #fff; border: 4px solid #37474f; border-radius: 15px;">
-                <h1 style="font-size: 3em; margin: 0;">${resultTitle}</h1>
-                <p style="font-size: 1.2em; color: #555;">${resultContent}</p>
-                <button onclick="location.reload()" style="background:#37474f; margin-top:20px;">Main Lagi</button>
-            </div>
-        `;
+    function resetGame() {
+        bulan = 1;
+        assets = new Set();
+        market = new Map();
+        modal = 0;
+        document.getElementById('finish-overlay').style.display = 'none';
+        document.getElementById('btn-init').disabled = false;
+        document.getElementById('btn-draw').disabled = true;
+        document.getElementById('action-group').style.display = 'none';
+        document.getElementById('draw-area').innerHTML = "<p>Mulai ulang produksi...</p>";
+        updateUI();
     }
 </script>
 
