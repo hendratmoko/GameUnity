@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Factory Rush: Industrial Tycoon</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Factory Rush — Industrial Tycoon</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
 
 <style>
+
 :root{
-    --primary:#0f172a;
-    --secondary:#1e293b;
+    --bg:#020617;
+    --panel:#0f172a;
+    --panel2:#111827;
     --accent:#f59e0b;
     --success:#22c55e;
     --danger:#ef4444;
     --text:#f8fafc;
-    --glass:rgba(255,255,255,0.06);
 }
 
 *{
@@ -22,64 +29,155 @@
     box-sizing:border-box;
 }
 
+html{
+    scroll-behavior:smooth;
+}
+
 body{
-    font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(135deg,#020617,#0f172a,#1e293b);
+    font-family:'Inter',sans-serif;
+    background:
+    radial-gradient(circle at top left,#334155 0%,transparent 25%),
+    radial-gradient(circle at bottom right,#7c2d12 0%,transparent 25%),
+    linear-gradient(135deg,#020617,#0f172a,#111827);
     color:var(--text);
     overflow-x:hidden;
 }
 
-/* ---------- OPENING SCREEN ---------- */
+/* =========================
+BACKGROUND EFFECT
+========================= */
+
+.factory-smoke{
+    position:fixed;
+    bottom:-150px;
+    width:250px;
+    height:250px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.09),transparent 70%);
+    filter:blur(25px);
+    pointer-events:none;
+    animation:smokeUp linear infinite;
+}
+
+.factory-smoke:nth-child(1){
+    left:10%;
+    animation-duration:18s;
+}
+
+.factory-smoke:nth-child(2){
+    left:50%;
+    animation-duration:22s;
+}
+
+.factory-smoke:nth-child(3){
+    left:80%;
+    animation-duration:15s;
+}
+
+@keyframes smokeUp{
+    from{
+        transform:translateY(0) scale(.7);
+        opacity:.15;
+    }
+
+    to{
+        transform:translateY(-130vh) scale(1.8);
+        opacity:0;
+    }
+}
+
+.spark{
+    position:fixed;
+    width:4px;
+    height:4px;
+    background:var(--accent);
+    border-radius:50%;
+    box-shadow:0 0 12px var(--accent);
+    animation:sparkMove linear infinite;
+    opacity:.5;
+}
+
+.spark:nth-child(4){
+    left:20%;
+    animation-duration:8s;
+}
+
+.spark:nth-child(5){
+    left:40%;
+    animation-duration:10s;
+}
+
+.spark:nth-child(6){
+    left:70%;
+    animation-duration:14s;
+}
+
+.spark:nth-child(7){
+    left:85%;
+    animation-duration:11s;
+}
+
+@keyframes sparkMove{
+    from{
+        transform:translateY(100vh) translateX(0);
+        opacity:0;
+    }
+
+    10%{
+        opacity:1;
+    }
+
+    to{
+        transform:translateY(-20vh) translateX(80px);
+        opacity:0;
+    }
+}
+
+/* =========================
+INTRO
+========================= */
+
 #intro-screen{
     min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    position:relative;
-    overflow:hidden;
-}
-
-.bg-glow{
-    position:absolute;
-    width:600px;
-    height:600px;
-    background:radial-gradient(circle,var(--accent),transparent 70%);
-    opacity:.15;
-    animation:pulseGlow 5s infinite;
-}
-
-@keyframes pulseGlow{
-    0%{transform:scale(0.8);opacity:.08;}
-    50%{transform:scale(1.2);opacity:.18;}
-    100%{transform:scale(0.8);opacity:.08;}
+    padding:40px 20px;
 }
 
 .intro-box{
-    position:relative;
-    z-index:2;
-    width:90%;
-    max-width:900px;
-    background:rgba(255,255,255,0.05);
+    width:100%;
+    max-width:1100px;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.08);
     backdrop-filter:blur(16px);
-    border:1px solid rgba(255,255,255,0.1);
-    border-radius:24px;
+    border-radius:28px;
     padding:50px;
-    text-align:center;
-    box-shadow:0 20px 60px rgba(0,0,0,.5);
+    box-shadow:
+    0 20px 50px rgba(0,0,0,.45),
+    inset 0 0 30px rgba(255,255,255,.03);
+
     animation:fadeUp 1.2s ease;
 }
 
 @keyframes fadeUp{
-    from{opacity:0;transform:translateY(40px);}
-    to{opacity:1;transform:translateY(0);}
+    from{
+        opacity:0;
+        transform:translateY(30px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 
 .game-logo{
+    font-family:'Orbitron',sans-serif;
     font-size:60px;
     font-weight:900;
-    letter-spacing:2px;
     color:var(--accent);
-    text-shadow:0 0 25px rgba(245,158,11,.6);
+    text-shadow:0 0 25px rgba(245,158,11,.4);
 }
 
 .subtitle{
@@ -90,27 +188,116 @@ body{
 
 .synopsis{
     margin-top:35px;
-    line-height:1.8;
+    line-height:1.9;
     color:#e2e8f0;
     text-align:justify;
 }
 
-.start-buttons{
+/* =========================
+HERO
+========================= */
+
+.hero-factory{
+    position:relative;
+    margin-top:35px;
+    width:100%;
+    height:300px;
+    border-radius:24px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.factory-city{
+    position:absolute;
+    inset:0;
+
+    background-image:
+    url('https://images.unsplash.com/photo-1513828583688-c52646db42da?q=80&w=1600&auto=format&fit=crop');
+
+    background-size:cover;
+    background-position:center;
+
+    animation:slowZoom 18s infinite alternate;
+}
+
+@keyframes slowZoom{
+    from{
+        transform:scale(1);
+    }
+
+    to{
+        transform:scale(1.08);
+    }
+}
+
+.factory-overlay{
+    position:absolute;
+    inset:0;
+    background:
+    linear-gradient(to top,
+    rgba(2,6,23,.95),
+    rgba(2,6,23,.2));
+}
+
+.hero-text{
+    position:absolute;
+    bottom:30px;
+    left:30px;
+    z-index:2;
+}
+
+.hero-text h2{
+    font-family:'Orbitron',sans-serif;
+    font-size:38px;
+    color:var(--accent);
+    margin-bottom:10px;
+}
+
+.hero-text p{
+    max-width:550px;
+    line-height:1.7;
+}
+
+/* =========================
+BUTTON
+========================= */
+
+.btn-group{
     margin-top:40px;
     display:flex;
-    justify-content:center;
     gap:20px;
     flex-wrap:wrap;
 }
 
 .btn{
     border:none;
-    border-radius:14px;
-    padding:14px 28px;
+    border-radius:16px;
+    padding:16px 28px;
     cursor:pointer;
     font-weight:bold;
     transition:.3s;
     text-decoration:none;
+    position:relative;
+    overflow:hidden;
+}
+
+.btn::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:100%;
+    height:100%;
+    background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.25),
+    transparent);
+    transition:.5s;
+}
+
+.btn:hover::before{
+    left:120%;
 }
 
 .btn-main{
@@ -118,36 +305,42 @@ body{
     color:black;
 }
 
-.btn-main:hover{
-    transform:translateY(-3px) scale(1.03);
-}
-
 .btn-alt{
-    background:rgba(255,255,255,0.1);
+    background:rgba(255,255,255,.08);
     color:white;
 }
 
-.btn-alt:hover{
-    background:rgba(255,255,255,0.2);
+.btn:hover{
+    transform:translateY(-4px);
 }
 
-.floating{
-    position:absolute;
-    font-size:50px;
-    opacity:.08;
-    animation:float 10s infinite linear;
+/* =========================
+HOW TO PLAY
+========================= */
+
+.howtoplay{
+    margin-top:45px;
+    background:rgba(255,255,255,.04);
+    border-radius:20px;
+    padding:30px;
 }
 
-@keyframes float{
-    from{transform:translateY(100vh) rotate(0deg);}
-    to{transform:translateY(-120vh) rotate(360deg);}
+.howtoplay h2{
+    margin-bottom:18px;
+    color:var(--accent);
 }
 
-/* ---------- GAME ---------- */
+.howtoplay ul{
+    line-height:2;
+    padding-left:20px;
+}
+
+/* =========================
+GAME
+========================= */
 
 #game-screen{
     display:none;
-    min-height:100vh;
     padding:20px;
 }
 
@@ -159,15 +352,15 @@ body{
 }
 
 .game-title{
-    font-size:26px;
-    font-weight:bold;
+    font-family:'Orbitron',sans-serif;
+    font-size:28px;
     color:var(--accent);
 }
 
 .exit-link{
     color:#94a3b8;
-    font-size:14px;
     text-decoration:none;
+    font-size:14px;
 }
 
 .exit-link:hover{
@@ -177,35 +370,69 @@ body{
 .game-container{
     max-width:1200px;
     margin:auto;
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(15px);
-    border-radius:25px;
+    background:rgba(255,255,255,.05);
+    border-radius:30px;
+    border:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(16px);
     padding:25px;
-    border:1px solid rgba(255,255,255,0.08);
+    position:relative;
+    overflow:hidden;
+}
+
+.game-container::before{
+    content:'';
+    position:absolute;
+    top:-50%;
+    left:-70%;
+    width:40%;
+    height:200%;
+    background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.08),
+    transparent);
+
+    transform:rotate(20deg);
+
+    animation:lightSweep 9s infinite linear;
+}
+
+@keyframes lightSweep{
+    from{
+        left:-80%;
+    }
+
+    to{
+        left:140%;
+    }
 }
 
 .header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    background:rgba(255,255,255,0.04);
+    background:rgba(255,255,255,.04);
+    border-radius:20px;
     padding:20px;
-    border-radius:18px;
     margin-bottom:20px;
 }
 
 .level-badge{
     background:var(--accent);
     color:black;
-    padding:8px 16px;
+    padding:10px 18px;
     border-radius:30px;
     font-weight:bold;
 }
 
 .modal-display{
-    font-size:42px;
-    color:var(--accent);
+    font-size:44px;
     font-weight:bold;
+    color:var(--accent);
+
+    text-shadow:
+    0 0 10px rgba(245,158,11,.5),
+    0 0 20px rgba(245,158,11,.3);
 }
 
 .info-box{
@@ -220,42 +447,36 @@ body{
 }
 
 .section{
-    background:rgba(255,255,255,0.04);
-    padding:20px;
-    border-radius:18px;
+    background:rgba(255,255,255,.04);
+    border-radius:22px;
+    padding:22px;
 }
 
 .card{
-    background:rgba(255,255,255,0.07);
-    padding:16px;
-    border-radius:14px;
-    margin-top:12px;
-    border-left:5px solid transparent;
-    animation:fadeUp .5s ease;
+    margin-top:14px;
+    padding:18px;
+    border-radius:18px;
+    background:
+    linear-gradient(
+    145deg,
+    rgba(255,255,255,.10),
+    rgba(255,255,255,.03));
+
+    border:1px solid rgba(255,255,255,.08);
+
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
 }
 
 .card.owned{
-    border-left-color:var(--success);
-    background:rgba(34,197,94,.15);
+    border-left:5px solid var(--success);
 }
 
 .card.pending{
-    border-left-color:var(--danger);
-}
-
-.icon{
-    font-size:24px;
-    margin-right:10px;
-}
-
-.active-icon{
-    animation:pulse 2s infinite;
-}
-
-@keyframes pulse{
-    0%{transform:scale(1);}
-    50%{transform:scale(1.08);}
-    100%{transform:scale(1);}
+    border-left:5px solid var(--danger);
 }
 
 .center{
@@ -263,139 +484,307 @@ body{
     margin-top:30px;
 }
 
+/* =========================
+ANALYSIS
+========================= */
+
 #analysis-panel{
     display:none;
-    margin-top:25px;
-    padding:25px;
-    border-radius:20px;
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.08);
-    animation:fadeUp 1s ease;
+    margin-top:30px;
+    padding:30px;
+    border-radius:24px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
 }
 
 .analysis-title{
-    font-size:36px;
-    margin-bottom:15px;
+    font-size:42px;
     font-weight:bold;
+    margin-bottom:15px;
 }
 
 .analysis-sub{
-    line-height:1.8;
-    color:#e2e8f0;
     white-space:pre-line;
+    line-height:1.9;
+    color:#e2e8f0;
 }
 
 .footer-brand{
     margin-top:40px;
     text-align:center;
     color:#64748b;
-    font-size:14px;
 }
+
+/* =========================
+LIVE BUTTON
+========================= */
+
+.live-link{
+    position:fixed;
+    right:18px;
+    bottom:18px;
+    z-index:999;
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:14px 18px;
+
+    border-radius:18px;
+
+    text-decoration:none;
+    color:white;
+
+    background:
+    linear-gradient(
+    135deg,
+    #dc2626,
+    #991b1b);
+
+    box-shadow:
+    0 10px 25px rgba(220,38,38,.4);
+
+    animation:livePulse 2s infinite;
+}
+
+.live-link:hover{
+    transform:scale(1.05);
+}
+
+.live-icon{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:red;
+    font-weight:bold;
+    font-size:20px;
+}
+
+.live-text small{
+    color:#fecaca;
+}
+
+@keyframes livePulse{
+    0%{
+        box-shadow:0 0 0 0 rgba(220,38,38,.6);
+    }
+
+    70%{
+        box-shadow:0 0 0 18px rgba(220,38,38,0);
+    }
+
+    100%{
+        box-shadow:0 0 0 0 rgba(220,38,38,0);
+    }
+}
+
+/* =========================
+RESPONSIVE
+========================= */
 
 @media(max-width:768px){
-    .main-layout{
-        grid-template-columns:1fr;
-    }
 
-    .game-logo{
-        font-size:40px;
-    }
-
-    .intro-box{
-        padding:30px;
-    }
+.main-layout{
+    grid-template-columns:1fr;
 }
+
+.game-logo{
+    font-size:40px;
+}
+
+.hero-text h2{
+    font-size:26px;
+}
+
+.intro-box{
+    padding:30px;
+}
+
+.header{
+    flex-direction:column;
+    gap:20px;
+}
+
+.modal-display{
+    font-size:34px;
+}
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- FLOATING ICONS -->
-<div class="floating" style="left:10%;animation-duration:15s;">🏭</div>
-<div class="floating" style="left:70%;animation-duration:18s;">⚙️</div>
-<div class="floating" style="left:45%;animation-duration:12s;">📦</div>
+<!-- BACKGROUND EFFECT -->
+
+<div class="factory-smoke"></div>
+<div class="factory-smoke"></div>
+<div class="factory-smoke"></div>
+
+<div class="spark"></div>
+<div class="spark"></div>
+<div class="spark"></div>
+<div class="spark"></div>
 
 <!-- INTRO -->
+
 <section id="intro-screen">
-<div class="bg-glow"></div>
 
 <div class="intro-box">
-<div class="game-logo">FACTORY RUSH</div>
-<div class="subtitle">Industrial Tycoon Simulator</div>
+
+<div class="game-logo">
+FACTORY RUSH
+</div>
+
+<div class="subtitle">
+Industrial Tycoon Simulator
+</div>
 
 <div class="synopsis">
+
 Di dunia industri modern, setiap keputusan menentukan nasib perusahaan.
-Anda adalah seorang pengusaha muda yang menerima kesempatan membangun
-pabrik impian dari nol. Modal terbatas, harga pasar tidak stabil,
-waktu terus berjalan, dan investor mulai kehilangan kesabaran.
+Anda adalah seorang pengusaha muda yang mendapatkan kesempatan membangun
+kerajaan industri dari nol.
 
-Bangun infrastruktur, beli mesin, rekrut tenaga kerja, dan hadapi
-RNG pasar yang kejam. Kegagalan akan membuat proyek mangkrak.
-Keberhasilan akan mengubah Anda menjadi legenda industri.
+Namun dunia tidak semudah yang dibayangkan.
+Harga pasar berubah setiap bulan.
+Investor mulai kehilangan kesabaran.
+Mesin mahal.
+Energi tidak stabil.
+Dan waktu terus berjalan.
+
+Bangun infrastruktur, beli mesin,
+atur strategi pembelian,
+dan selesaikan proyek sebelum modal habis.
+
+Satu keputusan salah...
+dapat menghancurkan seluruh impian industri Anda.
+
 </div>
 
-<div class="start-buttons">
-<button class="btn btn-main" onclick="startGame()">▶ MULAI GAME</button>
-<a href="#howtoplay" class="btn btn-alt">📖 Tata Cara Bermain</a>
+<div class="hero-factory">
+
+<div class="factory-city"></div>
+
+<div class="factory-overlay"></div>
+
+<div class="hero-text">
+<h2>
+⚙ BUILD YOUR INDUSTRIAL EMPIRE
+</h2>
+
+<p>
+Bangun jaringan industri terbesar,
+kuasai pasar global,
+dan buktikan bahwa Anda layak menjadi
+raja manufaktur modern.
+</p>
 </div>
 
-<div id="howtoplay" style="margin-top:40px;text-align:left;">
-<h2 style="margin-bottom:15px;color:var(--accent)">Cara Bermain</h2>
-<ul style="line-height:2;color:#e2e8f0;padding-left:20px;">
+</div>
+
+<div class="btn-group">
+
+<button class="btn btn-main" onclick="startGame()">
+▶ MULAI GAME
+</button>
+
+<a href="#howtoplay" class="btn btn-alt">
+📖 Tata Cara Bermain
+</a>
+
+</div>
+
+<div id="howtoplay" class="howtoplay">
+
+<h2>📖 Tata Cara Bermain</h2>
+
+<ul>
 <li>Roll modal awal untuk menentukan dana investasi.</li>
-<li>Setiap bulan Anda hanya bisa memilih membeli atau melewati komponen.</li>
-<li>Komponen yang dilewati masuk market dan akan menjadi lebih mahal.</li>
-<li>Selesaikan seluruh komponen sebelum bulan ke-12.</li>
-<li>Semakin tinggi level, harga semakin brutal dan peluang semakin sulit.</li>
+<li>Setiap bulan Anda hanya bisa membeli atau melewati komponen.</li>
+<li>Komponen yang dilewati akan masuk market dan menjadi lebih mahal.</li>
+<li>Selesaikan semua komponen sebelum bulan ke-12.</li>
+<li>Semakin tinggi level, harga akan semakin brutal.</li>
+<li>Level 1 dibuat lebih mudah untuk pemula.</li>
 </ul>
+
 </div>
+
 </div>
+
 </section>
 
 <!-- GAME -->
+
 <section id="game-screen">
 
 <div class="topbar">
-<div class="game-title">🏭 Factory Rush</div>
-<a href="" class="exit-link">✖ Keluar Game</a>
+
+<div class="game-title">
+⚙ FACTORY RUSH
+</div>
+
+<a href="" class="exit-link">
+✖ Keluar Game
+</a>
+
 </div>
 
 <div class="game-container">
 
 <div class="header">
+
 <div>
-<div id="level-text" class="level-badge">Level 1 : Startup</div>
+
+<div id="level-text" class="level-badge">
+Level 1 : Startup
+</div>
+
 <div class="info-box">
 Bulan : <span id="display-bulan">1</span> / 12
 </div>
+
 <div class="info-box">
 Modal Awal : <span id="modal-awal">-</span> M
 </div>
+
 </div>
 
 <div style="text-align:right;">
+
 <div>Sisa Modal</div>
+
 <div class="modal-display">
 <span id="display-modal">0</span> M
 </div>
+
 </div>
+
 </div>
 
 <div class="main-layout">
 
 <div class="section">
+
 <h2>🛒 Procurement</h2>
 
-<div id="draw-area" style="margin-top:15px;color:#cbd5e1;">
-Klik "Roll Modal Awal" untuk memulai ekspansi industri.
+<div id="draw-area" style="margin-top:20px;color:#cbd5e1;">
+Klik "Roll Modal Awal" untuk memulai pembangunan industri.
 </div>
 
-<div id="market-area" style="margin-top:25px;"></div>
 </div>
 
 <div class="section">
+
 <h2>🏗️ Factory Blueprint</h2>
+
 <div id="asset-list"></div>
+
 </div>
 
 </div>
@@ -411,21 +800,33 @@ Klik "Roll Modal Awal" untuk memulai ekspansi industri.
 </button>
 
 <div id="action-group" style="display:none;margin-top:20px;">
-<button class="btn btn-main" onclick="buyCard()">✅ Beli</button>
-<button class="btn btn-alt" onclick="toMarket()">✖ Lewati</button>
+
+<button class="btn btn-main" onclick="buyCard()">
+✅ Beli
+</button>
+
+<button class="btn btn-alt" onclick="toMarket()">
+✖ Lewati
+</button>
+
 </div>
 
 </div>
 
 <div id="analysis-panel">
+
 <div id="analysis-title" class="analysis-title"></div>
+
 <div id="analysis-sub" class="analysis-sub"></div>
 
-<div style="margin-top:30px;">
+<div style="margin-top:25px;">
+
 <button class="btn btn-main" onclick="resetGame()">
 🔄 Main Lagi
 </button>
+
 </div>
+
 </div>
 
 <div class="footer-brand">
@@ -433,9 +834,28 @@ Factory Rush — Industrial Tycoon Simulator
 </div>
 
 </div>
+
 </section>
 
+<!-- LIVE BUTTON -->
+
+<a class="live-link"
+href="https://www.youtube.com/live/kns3vn133y4?si=Al9IvLT3OhfnAw0w"
+target="_blank">
+
+<div class="live-icon">
+▶
+</div>
+
+<div class="live-text">
+<b>WATCH LIVE</b><br>
+<small>Factory Rush Broadcast</small>
+</div>
+
+</a>
+
 <script>
+
 let modal = 0;
 let modalAwal = 0;
 let bulan = 1;
@@ -445,9 +865,9 @@ let market = new Map();
 let currentCard = null;
 
 const levels = {
-1:{name:"Startup",multiplier:0.75},
+1:{name:"Startup",multiplier:0.7},
 2:{name:"Small Industry",multiplier:1.2},
-3:{name:"Medium Enterprise",multiplier:1.6},
+3:{name:"Medium Enterprise",multiplier:1.7},
 4:{name:"Corporate Giant",multiplier:2.2},
 5:{name:"Industrial Empire",multiplier:3}
 };
@@ -462,12 +882,15 @@ const komponen = {
 };
 
 function startGame(){
+
 document.getElementById('intro-screen').style.display='none';
 document.getElementById('game-screen').style.display='block';
+
 updateUI();
 }
 
 function initModal(){
+
 let r1=Math.floor(Math.random()*6)+4;
 let r2=Math.floor(Math.random()*6)+3;
 let r3=Math.floor(Math.random()*6)+2;
@@ -475,7 +898,7 @@ let r3=Math.floor(Math.random()*6)+2;
 modal=(r1*100)+(r2*10)+r3;
 
 if(currentLevel===1){
-modal += 200;
+modal+=250;
 }
 
 modalAwal=modal;
@@ -488,11 +911,16 @@ document.getElementById('btn-init').disabled=true;
 document.getElementById('btn-draw').disabled=false;
 
 document.getElementById('draw-area').innerHTML=`
+
 <div class="card">
+
 💼 Investor memberikan modal awal sebesar
 <b style="color:#f59e0b">${modalAwal} Milyar</b>.
+
 <br><br>
+
 Nasib industri kini berada di tangan Anda.
+
 </div>
 `;
 }
@@ -516,21 +944,57 @@ price=Math.floor(price*1.5);
 currentCard={id:die,...item,price,isMarket};
 
 document.getElementById('draw-area').innerHTML=`
+
 <div class="card">
-<div style="font-size:28px;">
-${item.icon} <b>${item.name}</b>
+
+<div style="display:flex;align-items:center;gap:15px;">
+
+<div style="
+width:70px;
+height:70px;
+border-radius:16px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:36px;
+background:rgba(245,158,11,.12);
+">
+
+${item.icon}
+
 </div>
 
-<div style="margin-top:10px;">
-Biaya Pembangunan :
-<b style="color:#f59e0b">${price} Milyar</b>
+<div>
+
+<div style="font-size:24px;font-weight:bold;">
+${item.name}
 </div>
 
-${isMarket ? `
-<div style="margin-top:8px;color:#ef4444;">
-⚠ Harga market naik 150% karena penundaan proyek.
+<div style="margin-top:6px;color:#cbd5e1;">
+Biaya pembangunan industri
 </div>
-`:''}
+
+<div style="
+margin-top:10px;
+color:#f59e0b;
+font-size:24px;
+font-weight:bold;
+">
+
+${price} M
+
+</div>
+
+${isMarket ?
+`<div style="margin-top:8px;color:#ef4444;">
+⚠ Harga market naik 150%
+</div>`
+:''}
+
+</div>
+
+</div>
+
 </div>
 `;
 
@@ -555,10 +1019,15 @@ nextTurn();
 }else{
 
 document.getElementById('draw-area').innerHTML=`
+
 <div class="card pending">
+
 ❌ Dana tidak cukup untuk membeli komponen ini.
+
 <br><br>
-Investor mulai meragukan kemampuan manajemen Anda.
+
+Investor mulai kehilangan kepercayaan terhadap proyek Anda.
+
 </div>
 `;
 
@@ -576,6 +1045,7 @@ nextTurn();
 function nextTurn(){
 
 if(bulan>=12){
+
 showResult();
 return;
 }
@@ -585,16 +1055,25 @@ bulan++;
 document.getElementById('action-group').style.display='none';
 
 document.getElementById('draw-area').innerHTML=`
+
 <div class="card">
-📅 Memasuki bulan ke-${bulan}...
+
+📅 Memasuki bulan ke-${bulan}
+
 <br><br>
-Pasar industri terus bergerak.
+
+Pasar industri terus berubah.
+Harga material mulai bergerak.
+
 </div>
 `;
 
 setTimeout(()=>{
+
 document.getElementById('btn-draw').disabled=false;
+
 updateUI();
+
 },700);
 }
 
@@ -602,7 +1081,9 @@ function updateUI(){
 
 document.getElementById('display-modal').innerText=modal;
 document.getElementById('display-bulan').innerText=bulan;
-document.getElementById('level-text').innerText=`Level ${currentLevel} : ${levels[currentLevel].name}`;
+
+document.getElementById('level-text').innerText=
+`Level ${currentLevel} : ${levels[currentLevel].name}`;
 
 let html='';
 
@@ -611,20 +1092,40 @@ for(let i=1;i<=6;i++){
 let owned=assets.has(i);
 
 html+=`
+
 <div class="card ${owned?'owned':'pending'}">
 
-<div style="display:flex;align-items:center;">
-<div class="icon ${owned?'active-icon':''}">
+<div style="display:flex;align-items:center;gap:14px;">
+
+<div style="
+width:55px;
+height:55px;
+border-radius:14px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:28px;
+background:rgba(255,255,255,.08);
+">
+
 ${komponen[i].icon}
+
 </div>
 
 <div>
-<b>${komponen[i].name}</b>
-<br>
-<small>
-${owned?'Sudah Dibangun':'Belum Tersedia'}
-</small>
+
+<div style="font-weight:bold;">
+${komponen[i].name}
 </div>
+
+<div style="margin-top:5px;color:#cbd5e1;font-size:14px;">
+
+${owned?'Sudah Dibangun':'Belum Dibangun'}
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -645,28 +1146,38 @@ let success=(assets.size===6);
 
 if(success){
 
-title.innerHTML="🏭 INDUSTRI BERDIRI!";
+title.innerHTML="🏭 INDUSTRI BERDIRI";
 
 title.style.color="#22c55e";
 
 sub.innerHTML=`
-Seluruh komponen berhasil diselesaikan.
-Asap pabrik mulai mengepul, mesin produksi bergerak,
-dan ribuan pekerja kini bergantung pada kepemimpinan Anda.
 
-Investor menyebut proyek ini sebagai
-"keajaiban industri modern".
+Seluruh komponen berhasil diselesaikan.
+
+Asap pabrik mulai mengepul.
+Mesin produksi mulai bergerak.
+Investor mulai menyebut nama Anda
+sebagai calon raja industri baru.
 
 📊 ANALISIS PEMAIN
+
 • Penyelesaian : 100%
-• Efisiensi Modal : ${Math.max(0,Math.floor((modal/modalAwal)*100))}%
+• Efisiensi Modal :
+${Math.max(0,Math.floor((modal/modalAwal)*100))}%
+
 • Sisa Modal : ${modal} Milyar
-• Tingkat Kepemimpinan : ${modal > 200 ? 'Visioner' : 'Agresif'}
+• Level Kepemimpinan :
+${modal > 200 ? 'Visioner' : 'Agresif'}
 
 💡 SARAN
-Anda memiliki kemampuan mengelola risiko dan investasi.
-Di level berikutnya, pasar akan jauh lebih brutal,
-harga makin tidak stabil, dan investor lebih kejam.
+
+Anda berhasil mengendalikan risiko industri.
+
+Namun di level berikutnya...
+pasar akan jauh lebih brutal,
+harga semakin tidak stabil,
+dan investor semakin kejam.
+
 `;
 
 if(currentLevel<5){
@@ -680,27 +1191,40 @@ title.innerHTML="💀 PROYEK MANGKRAK";
 title.style.color="#ef4444";
 
 sub.innerHTML=`
-Waktu habis sebelum pabrik selesai dibangun.
+
+Waktu habis sebelum proyek selesai.
 
 Gedung setengah jadi mulai ditinggalkan.
-Investor menarik seluruh dukungan.
+Investor menarik seluruh dana.
 Mesin berhenti sebelum sempat beroperasi.
 
-Mimpi industrialisasi runtuh di tengah tekanan pasar.
+Impian industrialisasi runtuh
+di tengah tekanan pasar.
 
 📊 ANALISIS PEMAIN
-• Komponen Selesai : ${assets.size}/6
-• Sisa Modal : ${modal} Milyar
+
+• Komponen Selesai :
+${assets.size}/6
+
+• Sisa Modal :
+${modal} Milyar
+
 • Penyebab Utama :
-${modal <= 0 ? '- Kehabisan modal operasional' : '- Strategi pembelian kurang efektif'}
+${modal <= 0 ?
+'Kehabisan modal operasional'
+:
+'Strategi pembelian kurang efektif'}
 
 💡 SARAN
+
 Prioritaskan komponen penting sejak awal.
-Hindari terlalu banyak melewati kartu,
-karena harga market akan menghancurkan cashflow.
+Jangan terlalu sering melewati kartu,
+karena market akan menghancurkan cashflow.
 
 Di dunia industri...
-kesalahan kecil dapat menghancurkan kerajaan besar.
+kesalahan kecil dapat menghancurkan
+kerajaan besar.
+
 `;
 }
 
@@ -711,24 +1235,29 @@ document.getElementById('action-group').style.display='none';
 function resetGame(){
 
 bulan=1;
+
 assets=new Set();
+
 market=new Map();
+
 modal=0;
+
 modalAwal=0;
 
 document.getElementById('analysis-panel').style.display='none';
 
 document.getElementById('btn-init').disabled=false;
+
 document.getElementById('btn-draw').disabled=true;
 
 document.getElementById('action-group').style.display='none';
 
-document.getElementById('draw-area').innerHTML=`
-Klik "Roll Modal Awal" untuk memulai ekspansi industri.
-`;
+document.getElementById('draw-area').innerHTML=
+'Klik "Roll Modal Awal" untuk memulai pembangunan industri.';
 
 updateUI();
 }
+
 </script>
 
 </body>
